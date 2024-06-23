@@ -31,9 +31,9 @@ body{
 
 .header >h1{
     color: #FFF;
-    text-align: center;
     font-size:6rem;
     font-family: 'monserrat-light';
+    text-align: center;
 }
 
 .main{
@@ -176,3 +176,56 @@ body{
 .trash__mark >img{
     width: 100%;
 }
+
+@media screen and (min-width: 768px) and (max-width: 1024px){
+    
+    .input__section{
+        display: flex;
+        /* background-color: greenyellow; */
+        width: 65vw;
+        height: 35px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .main__section__content{
+        /* background: red;  */
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        gap: 15px;
+        /* justify-content: center; */
+    }
+}
+
+@media screen and (max-width: 767px) {
+
+    .header >h1{
+        color: #FFF;
+        font-size:4rem;
+        font-family: 'monserrat-light';
+        text-align: center;
+    }
+    
+
+    .input__section{
+        display: flex;
+        /* background-color: greenyellow; */
+        width: 90vw;
+        height: 35px;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .main__section__content{
+        /* background: red;  */
+        width: 86%;
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
+        gap: 15px;
+        /* justify-content: center; */
+    }
+}
+

@@ -87,7 +87,20 @@ body{
     gap: 15px;
     /* justify-content: center; */
 }
+.onHold__task{
+    /* background: yellowgreen; */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 
+}
+.ready__Task{
+    /* background: lightblue; */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+}
 .to__do__task{
     background-color: #000;
     width: 95%;

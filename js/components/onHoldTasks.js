@@ -4,7 +4,7 @@ export const getOnholdTasks = async(data)=>{
     data.forEach(element => {
             for(let i in element){
                 if(element[i] === "On hold"){
-                    plantilla +=/*html*/`
+                plantilla +=/*html*/`
                     <article class="to__do__task">
                         <p>${element.task}</p>
                         <div class="to__do__buttons">

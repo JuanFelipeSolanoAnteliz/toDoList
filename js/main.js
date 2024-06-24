@@ -11,9 +11,28 @@ import { taskById } from "./module/taskById.js";
 const url = `https://667788a1145714a1bd74f785.mockapi.io/tasks`
 let data = await getAllTask();
 
+// clock in real time------------------------------------------
 
+let real__time__clock = document.querySelector('#real__time__clock');
+function updateDateTime() {
+    const now = new Date();
 
-// await postTask({task:asd});
+    const day = now.getDate().toString().padStart(2, '0');
+    const month = (now.getMonth() + 1).toString().padStart(2, '0'); 
+    const year = now.getFullYear();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+
+    const formattedDateTime = `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
+
+    real__time__clock.textContent = formattedDateTime;
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+// ------------------------------------------------------------
+
 
 let onHold__task = document.querySelector("#onHold__task");
 onHold__task.innerHTML = await getOnholdTasks(data);
@@ -134,6 +153,7 @@ console.log(check__ready)
 check__ready.forEach(element => {
     element.addEventListener('click',async(article)=>{
         let closestArticle = article.target.closest('article');
+        console.log(closestArticle)
         let idToUnmark = closestArticle.id;
         let task = await taskById(idToUnmark);
         let textTask = task.task;

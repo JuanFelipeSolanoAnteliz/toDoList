@@ -3,6 +3,10 @@ import { getReadyTasks } from "./components/readyTask.js";
 import { getOnholdTasks } from "./components/onHoldTasks.js";
 import { postTask } from "./module/addTAsk.js";
 import { deleteTask } from "./module/deleteTAsk.js";
+import { markAsReady } from "./module/markAsReady.js";
+import { taskById } from "./module/taskById.js";
+
+
 const url = `https://667788a1145714a1bd74f785.mockapi.io/tasks`
 let data = await getAllTask();
 
@@ -66,17 +70,76 @@ add__button.addEventListener('click', async(e)=>{
 
 
 // event to delete ---------------------------------------------------
-let trash__button = document.querySelectorAll("#trash__button");
+let list__trash__button = document.querySelectorAll("#trash__button");
 let listDomOnhold = document.querySelectorAll(".to__do__task");
-console.log(trash__button);
+// console.log(trash__button);
 
-trash__button.forEach(element => {
+list__trash__button.forEach(element => {
     // console.log(element)
     element.addEventListener('click',async(article)=>{
         let closestArticle = article.target.closest('article')
+        // console.log(closestArticle)
         let idToDelete = closestArticle.id
-        // console.log(closestArticle.id)
         closestArticle.remove()
         await deleteTask(idToDelete);
     })
 });
+
+// event to mark as ready ---------------------------------------------
+
+let check__to__do = document.querySelectorAll("#check__to__do")
+console.log(check__to__do)
+
+const printNewReady = async(data)=>{
+    let plantilla='';
+    let lastTask = data.at(-1);
+    plantilla+=/*html*/`
+    <article class="mark__task">
+        <p>${text}</p>
+        <div class="mark__buttoms">
+            <div class="check__mark">
+                <img src="storage/img/checkmark _mark.svg" alt="">
+            </div>
+            <div class="trash__mark">
+                <img src="storage/img/trash_mark.svg" alt="">
+            </div>
+        </div>  
+    </article>`;
+    return plantilla;
+}
+
+
+check__to__do.forEach(element => {
+    element.addEventListener('click',async(article)=>{
+        let closestArticle = article.target.closest('article');
+        console.log(closestArticle)
+        
+        let idToMarkAsReady = closestArticle.id;
+        let taskContent = await taskById(closestArticle.id);
+        let text = taskContent.task;
+        
+        const printNewReady = async(data)=>{
+            let plantilla='';
+            let lastTask = data.at(-1);
+            plantilla+=/*html*/`
+            <article class="mark__task">
+                <p>${text}</p>
+                <div class="mark__buttoms">
+                    <div class="check__mark">
+                        <img src="storage/img/checkmark _mark.svg" alt="">
+                    </div>
+                    <div class="trash__mark">
+                        <img src="storage/img/trash_mark.svg" alt="">
+                    </div>
+                </div>  
+            </article>`;
+            return plantilla;
+        }
+        
+        await markAsReady(idToMarkAsReady);
+        closestArticle.remove()
+        ready__Task.innerHTML += await printNewReady(data)
+    })
+});
+// ------------------------------------------------------------
+

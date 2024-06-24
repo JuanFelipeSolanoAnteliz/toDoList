@@ -8,7 +8,7 @@ export const getReadyTasks = async(data)=>{
                 <article class="mark__task">
                     <p>${element.task}</p>
                     <div class="mark__buttoms">
-                        <div class="check__mark">
+                        <div id="check__ready" class="check__mark">
                             <img src="storage/img/checkmark _mark.svg" alt="">
                         </div>
                         <div class="trash__mark">

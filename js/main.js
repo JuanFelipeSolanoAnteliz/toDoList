@@ -2,6 +2,7 @@ import { getAllTask } from "./module/app.js";
 import { getReadyTasks } from "./components/readyTask.js";
 import { getOnholdTasks } from "./components/onHoldTasks.js";
 import { postTask } from "./module/addTAsk.js";
+import { deleteTask } from "./module/deleteTAsk.js";
 const url = `https://667788a1145714a1bd74f785.mockapi.io/tasks`
 let data = await getAllTask();
 
@@ -20,8 +21,6 @@ let add__button = document.querySelector("#add__button");
 
 // Añadir neva tarea al JSON ----------------------------------
 
-
-
 let newtask;
 input__search.addEventListener('input', async(inputTask)=>{
     
@@ -32,7 +31,7 @@ input__search.addEventListener('input', async(inputTask)=>{
 const printNewTask =async (data)=>{
     let lastTask;
     let plantilla;
-    console.log(data)
+    // console.log(data)
     lastTask = data.at(-1);
     plantilla = /*html*/`
     <article id="${lastTask.id++}" class="to__do__task">
@@ -66,4 +65,18 @@ add__button.addEventListener('click', async(e)=>{
 // ---------------------------------------------------------------
 
 
+// event to delete ---------------------------------------------------
+let trash__button = document.querySelectorAll("#trash__button");
+let listDomOnhold = document.querySelectorAll(".to__do__task");
+console.log(trash__button);
 
+trash__button.forEach(element => {
+    // console.log(element)
+    element.addEventListener('click',async(article)=>{
+        let closestArticle = article.target.closest('article')
+        let idToDelete = closestArticle.id
+        // console.log(closestArticle.id)
+        closestArticle.remove()
+        await deleteTask(idToDelete);
+    })
+});

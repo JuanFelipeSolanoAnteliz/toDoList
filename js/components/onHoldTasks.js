@@ -11,7 +11,7 @@ export const getOnholdTasks = async(data)=>{
                             <div class="check__to__do">
                                 <img src="storage/img/checkmark.svg" alt="">
                             </div>
-                            <div class="trash__to__do">
+                            <div id="trash__button" class="trash__to__do">
                                 <img src="storage/img/trash.svg" alt="">
                             </div>
                         </div>

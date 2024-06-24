@@ -5,7 +5,7 @@ export const getOnholdTasks = async(data)=>{
             for(let i in element){
                 if(element[i] === "On hold"){
                 plantilla +=/*html*/`
-                    <article class="to__do__task">
+                    <article id="${element.id}" class="to__do__task">
                         <p>${element.task}</p>
                         <div class="to__do__buttons">
                             <div class="check__to__do">
@@ -21,3 +21,4 @@ export const getOnholdTasks = async(data)=>{
         });
     return plantilla;
 }
+

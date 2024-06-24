@@ -4,6 +4,7 @@ import { getOnholdTasks } from "./components/onHoldTasks.js";
 import { postTask } from "./module/addTAsk.js";
 import { deleteTask } from "./module/deleteTAsk.js";
 import { markAsReady } from "./module/markAsReady.js";
+import { markAsUnready } from "./module/markAsUndready.js";
 import { taskById } from "./module/taskById.js";
 
 
@@ -90,24 +91,6 @@ list__trash__button.forEach(element => {
 let check__to__do = document.querySelectorAll("#check__to__do")
 console.log(check__to__do)
 
-const printNewReady = async(data)=>{
-    let plantilla='';
-    let lastTask = data.at(-1);
-    plantilla+=/*html*/`
-    <article class="mark__task">
-        <p>${text}</p>
-        <div class="mark__buttoms">
-            <div class="check__mark">
-                <img src="storage/img/checkmark _mark.svg" alt="">
-            </div>
-            <div class="trash__mark">
-                <img src="storage/img/trash_mark.svg" alt="">
-            </div>
-        </div>  
-    </article>`;
-    return plantilla;
-}
-
 
 check__to__do.forEach(element => {
     element.addEventListener('click',async(article)=>{
@@ -136,10 +119,49 @@ check__to__do.forEach(element => {
             return plantilla;
         }
         
-        await markAsReady(idToMarkAsReady);
+        await markAsReady(idToMarkAsReady,text);
         closestArticle.remove()
         ready__Task.innerHTML += await printNewReady(data)
     })
 });
 // ------------------------------------------------------------
+
+// event to unmark a task-------------------------------------------------
+
+let check__ready = document.querySelectorAll("#check__ready");
+console.log(check__ready)
+
+check__ready.forEach(element => {
+    element.addEventListener('click',async(article)=>{
+        let closestArticle = article.target.closest('article');
+        let idToUnmark = closestArticle.id;
+        let task = await taskById(idToUnmark);
+        let textTask = task.task;
+        
+        const printAsUnmark = async(data)=>{
+            let plantilla='';
+            let lastTask = data.at(-1);
+            // console.log(lastTask.id)
+            plantilla+=/*html*/`
+            <article id="${lastTask.id++}" class="to__do__task">
+                <p>${textTask}</p>
+                <div class="to__do__buttons">
+                    <div id="check__to__do" class="check__to__do">
+                        <img src="storage/img/checkmark.svg" alt="">
+                    </div>
+                    <div id="trash__button" class="trash__to__do">
+                        <img src="storage/img/trash.svg" alt="">
+                    </div>
+                </div>
+            </article>`;
+            return plantilla;
+        }
+
+        closestArticle.remove();
+        await markAsUnready(idToUnmark,textTask);
+        onHold__task.innerHTML += await printAsUnmark(data);
+
+    })
+});
+// --------------------------------------------------------------
 

@@ -5,7 +5,7 @@ export const getReadyTasks = async(data)=>{
         for(let i in element){
             if(element[i] === "ready"){
                 plantilla+=/*html*/`
-                <article class="mark__task">
+                <article id="${element.id++}" class="mark__task">
                     <p>${element.task}</p>
                     <div class="mark__buttoms">
                         <div id="check__ready" class="check__mark">

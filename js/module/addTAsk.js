@@ -8,6 +8,6 @@ export const postTask = async (task)=>{
     }
     console.log()
     let res = await fetch(url,config)
-    let data = res.json();
+    let data = await res.json();
     console.log(data)
 }

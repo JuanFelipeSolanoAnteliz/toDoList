@@ -1,1 +1,1 @@
-export const url= `https://667788a1145714a1bd74f785.mockapi.io/tasks`
+export const url= `https://6674179975872d0e0a950e53.mockapi.io/todoList`

@@ -8,7 +8,7 @@ import { markAsUnready } from "./module/markAsUndready.js";
 import { taskById } from "./module/taskById.js";
 
 
-const url = `https://667788a1145714a1bd74f785.mockapi.io/tasks`
+const url = `https://6674179975872d0e0a950e53.mockapi.io/todoList`
 let data = await getAllTask();
 
 // clock in real time------------------------------------------
@@ -34,160 +34,120 @@ setInterval(updateDateTime, 1000);
 // ------------------------------------------------------------
 
 let main = document.querySelector(".main");
-
-
-
-let onHold__task = document.querySelector("#onHold__task");
-onHold__task.innerHTML = await getOnholdTasks(data);
-
-let ready__Task = document.querySelector("#ready__Task");
-ready__Task.innerHTML = await getReadyTasks(data);
-
-let input__search = document.querySelector("#input__search")
 let add__button = document.querySelector("#add__button");
+let input__search = document.querySelector("#input__search");
 
-// Añadir neva tarea al JSON ----------------------------------
+async function updateTasks() {
+    data = await getAllTask();
+    let onHold__task = document.querySelector("#onHold__task");
+    onHold__task.innerHTML = await getOnholdTasks(data);
 
-const buttonSection = async(e)=>{
-let newtask;
-input__search.addEventListener('input', async(inputTask)=>{
-    
-    newtask = inputTask.target.value;
-    console.log(newtask)
-});
+    let ready__Task = document.querySelector("#ready__Task");
+    ready__Task.innerHTML = await getReadyTasks(data);
 
-const printNewTask =async (data)=>{
-    let lastTask;
-    let plantilla;
-    // console.log(data)
-    lastTask = data.at(-1);
-    plantilla = /*html*/`
-    <article id="${lastTask.id++}" class="to__do__task">
-        <p>${newtask}</p>
-        <div class="to__do__buttons">
-            <div class="check__to__do">
-                <img src="storage/img/checkmark.svg" alt="">
-            </div>
-            <div class="trash__to__do">
-                <img src="storage/img/trash.svg" alt="">
-            </div>
-        </div>
-    </article>`;
-
-    return plantilla;
+    attachEventListeners();
 }
 
-add__button.addEventListener('click', async(e)=>{
-    let valueTask = newtask;
-    console.log(valueTask);
-    
+async function attachEventListeners() {
+    // Event to delete tasks
+    let list__trash__button = document.querySelectorAll("#trash__button");
+    list__trash__button.forEach(element => {
+        element.addEventListener('click', async (article) => {
+            let closestArticle = article.target.closest('article');
+            let idToDelete = closestArticle.id;
+            closestArticle.remove();
+            await deleteTask(idToDelete);
+            await updateTasks();
+        });
+    });
+
+    // Event to mark tasks as ready
+    let check__to__do = document.querySelectorAll("#check__to__do");
+    check__to__do.forEach(element => {
+        element.addEventListener('click', async (article) => {
+            let closestArticle = article.target.closest('article');
+            let idToMarkAsReady = closestArticle.id;
+            let taskContent = await taskById(closestArticle.id);
+            let text = taskContent.task;
+            const printNewReady = async (data) => {
+                let plantilla = '';
+                plantilla += /*html*/`
+                <article class="mark__task">
+                    <p>${text}</p>
+                    <div class="mark__buttoms">
+                        <div class="check__mark">
+                            <img src="storage/img/checkmark_mark.svg" alt="">
+                        </div>
+                        <div class="trash__mark">
+                            <img src="storage/img/trash_mark.svg" alt="">
+                        </div>
+                    </div>
+                </article>`;
+                return plantilla;
+            }
+            await markAsReady(idToMarkAsReady, text);
+            closestArticle.remove();
+            ready__Task.innerHTML += await printNewReady(data);
+            attachEventListeners();
+        });
+    });
+
+    // Event to unmark tasks
+    let check__ready = document.querySelectorAll("#check__ready");
+    check__ready.forEach(element => {
+        element.addEventListener('click', async (article) => {
+            let closestArticle = article.target.closest('article');
+            let idToUnmark = closestArticle.id;
+            let task = await taskById(idToUnmark);
+            let textTask = task.task;
+            const printAsUnmark = async (data) => {
+                let plantilla = '';
+                plantilla += /*html*/`
+                <article id="${task.id++}" class="to__do__task">
+                    <p>${textTask}</p>
+                    <div class="to__do__buttons">
+                        <div id="check__to__do" class="check__to__do">
+                            <img src="storage/img/checkmark_mark.svg" alt="">
+                        </div>
+                        <div id="trash__button" class="trash__to__do">
+                            <img src="storage/img/trash.svg" alt="">
+                        </div>
+                    </div>
+                </article>`;
+                return plantilla;
+            }
+            await markAsUnready(idToUnmark, textTask);
+            closestArticle.remove();
+            onHold__task.innerHTML += await printAsUnmark(data);
+            attachEventListeners();
+        });
+    });
+
+    // Event to delete marked tasks
+    let trash__mark = document.querySelectorAll("#trash__mark");
+    trash__mark.forEach(element => {
+        element.addEventListener('click', async (article) => {
+            let getClosestArticle = article.target.closest('article');
+            let idToDelete = getClosestArticle.id;
+            getClosestArticle.remove();
+            await deleteTask(idToDelete);
+        });
+    });
+}
+
+// Add new task
+add__button.addEventListener('click', async (e) => {
+    let valueTask = input__search.value;
     let dataOfNewTask = {
-        task:valueTask,
-        status:"On hold"
-    }
-    await postTask(dataOfNewTask)
-    onHold__task.innerHTML += await printNewTask(data);
-    await buttonSection();
-});
-// ---------------------------------------------------------------
-
-
-// event to delete ---------------------------------------------------
-let list__trash__button = document.querySelectorAll("#trash__button");
-let listDomOnhold = document.querySelectorAll(".to__do__task");
-// console.log(trash__button);
-
-list__trash__button.forEach(element => {
-    // console.log(element)
-    element.addEventListener('click',async(article)=>{
-        let closestArticle = article.target.closest('article')
-        // console.log(closestArticle)
-        let idToDelete = closestArticle.id
-        closestArticle.remove()
-        await deleteTask(idToDelete);
-        await buttonSection();
-    })
+        task: valueTask,
+        status: "On hold"
+    };
+    await postTask(dataOfNewTask);
+    await updateTasks();
+    input__search.value = null;
 });
 
-// event to mark as ready ---------------------------------------------
+// Initial load
+updateTasks();
 
-let check__to__do = document.querySelectorAll("#check__to__do")
-console.log(check__to__do)
-
-
-check__to__do.forEach(element => {
-    element.addEventListener('click',async(article)=>{
-        let closestArticle = article.target.closest('article');
-        console.log(closestArticle)
-        
-        let idToMarkAsReady = closestArticle.id;
-        let taskContent = await taskById(closestArticle.id);
-        let text = taskContent.task;
-        
-        const printNewReady = async(data)=>{
-            let plantilla='';
-            let lastTask = data.at(-1);
-            plantilla+=/*html*/`
-            <article class="mark__task">
-                <p>${text}</p>
-                <div class="mark__buttoms">
-                    <div class="check__mark">
-                        <img src="storage/img/checkmark _mark.svg" alt="">
-                    </div>
-                    <div class="trash__mark">
-                        <img src="storage/img/trash_mark.svg" alt="">
-                    </div>
-                </div>  
-            </article>`;
-            return plantilla;
-        }
-        
-        await markAsReady(idToMarkAsReady,text);
-        closestArticle.remove()
-        ready__Task.innerHTML += await printNewReady(data);
-        await buttonSection();
-    })
-});
-// ------------------------------------------------------------
-
-// event to unmark a task-------------------------------------------------
-
-let check__ready = document.querySelectorAll("#check__ready");
-console.log(check__ready)
-
-check__ready.forEach(element => {
-    element.addEventListener('click',async(article)=>{
-        let closestArticle = article.target.closest('article');
-        console.log(closestArticle)
-        let idToUnmark = closestArticle.id;
-        let task = await taskById(idToUnmark);
-        let textTask = task.task;
-        
-        const printAsUnmark = async(data)=>{
-            let plantilla='';
-            let lastTask = data.at(-1);
-            // console.log(lastTask.id)
-            plantilla+=/*html*/`
-            <article id="${lastTask.id++}" class="to__do__task">
-                <p>${textTask}</p>
-                <div class="to__do__buttons">
-                    <div id="check__to__do" class="check__to__do">
-                        <img src="storage/img/checkmark.svg" alt="">
-                    </div>
-                    <div id="trash__button" class="trash__to__do">
-                        <img src="storage/img/trash.svg" alt="">
-                    </div>
-                </div>
-            </article>`;
-            return plantilla;
-        }
-
-        closestArticle.remove();
-        await markAsUnready(idToUnmark,textTask);
-        onHold__task.innerHTML += await printAsUnmark(data);
-        await buttonSection();
-    })
-});
 // --------------------------------------------------------------
-}
-await buttonSection();

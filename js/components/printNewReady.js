@@ -6,7 +6,7 @@ export const printNewReady = async(data)=>{
         <p>${text}</p>
         <div class="mark__buttoms">
             <div class="check__mark">
-                <img src="storage/img/checkmark _mark.svg" alt="">
+                <img src="storage/img/checkmark_mark.svg" alt="">
             </div>
             <div class="trash__mark">
                 <img src="storage/img/trash_mark.svg" alt="">

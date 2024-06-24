@@ -33,6 +33,9 @@ updateDateTime();
 setInterval(updateDateTime, 1000);
 // ------------------------------------------------------------
 
+let main = document.querySelector(".main");
+
+
 
 let onHold__task = document.querySelector("#onHold__task");
 onHold__task.innerHTML = await getOnholdTasks(data);
@@ -45,6 +48,7 @@ let add__button = document.querySelector("#add__button");
 
 // Añadir neva tarea al JSON ----------------------------------
 
+const buttonSection = async(e)=>{
 let newtask;
 input__search.addEventListener('input', async(inputTask)=>{
     
@@ -82,9 +86,8 @@ add__button.addEventListener('click', async(e)=>{
         status:"On hold"
     }
     await postTask(dataOfNewTask)
-    
-    onHold__task.innerHTML += await printNewTask(data)
-
+    onHold__task.innerHTML += await printNewTask(data);
+    await buttonSection();
 });
 // ---------------------------------------------------------------
 
@@ -102,6 +105,7 @@ list__trash__button.forEach(element => {
         let idToDelete = closestArticle.id
         closestArticle.remove()
         await deleteTask(idToDelete);
+        await buttonSection();
     })
 });
 
@@ -140,7 +144,8 @@ check__to__do.forEach(element => {
         
         await markAsReady(idToMarkAsReady,text);
         closestArticle.remove()
-        ready__Task.innerHTML += await printNewReady(data)
+        ready__Task.innerHTML += await printNewReady(data);
+        await buttonSection();
     })
 });
 // ------------------------------------------------------------
@@ -180,8 +185,9 @@ check__ready.forEach(element => {
         closestArticle.remove();
         await markAsUnready(idToUnmark,textTask);
         onHold__task.innerHTML += await printAsUnmark(data);
-
+        await buttonSection();
     })
 });
 // --------------------------------------------------------------
-
+}
+await buttonSection();
